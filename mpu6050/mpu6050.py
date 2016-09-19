@@ -1788,7 +1788,7 @@ class MPU6050(object):
                 more = float(fifo_count / length) - 1 > 0
 
                 if DEBUG: print(":".join(["%0.2x" % x for x in data]) + " -- count: " + str(fifo_count) + " -- read: " + str(length) + " -- more: " + str(more))
-                return extra + data, more
+                return data, more
 
             def read(self):
                 # /**
@@ -1847,7 +1847,7 @@ class MPU6050(object):
                     quat[2] = (fifo_data[8] << 24) | (fifo_data[9] << 16) | (fifo_data[10] << 8) | fifo_data[11]
                     quat[3] = (fifo_data[12] << 24) | (fifo_data[13] << 16) | (fifo_data[14] << 8) | fifo_data[15]
                     ii += 16
-                    ii += 8 # to account for extra bytes read
+                    #ii += 8 # to account for extra bytes read
                     # ifdef FIFO_CORRUPTION_CHECK
                     # /* We can detect a corrupted FIFO by monitoring the quaternion data and
                     #  * ensuring that the magnitude is always normalized to one. This
