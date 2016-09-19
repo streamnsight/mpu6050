@@ -8,6 +8,10 @@ class Quaternion:
         self.y = y
         self.z = z
 
+    def __str__(self):
+        return "w: " + str(self.w) + " x: " + str(self.x) + " y: " +  str(self.y) + " z: " + str(self.z)
+
+
     def get_product(self, q):
         """Multiply a Quaternion by another
         :param q: Quaternion -- quaternion to multiply by
@@ -88,6 +92,8 @@ class Vector:
         self.y = y
         self.z = z
 
+    def __str__(self):
+        return "x: " + str(self.x) + " y: " +  str(self.y) + " z: " + str(self.z)
 
     def get_magnitude(self):
         """Get the magnitude of this Vector

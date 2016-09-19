@@ -1756,7 +1756,7 @@ class MPU6050(object):
                 fifo_count = self.i2c.read_word(self.RA_FIFO_COUNTH)
                 # if DEBUG: print("FIFO count: " + str(fifo_count) + " length requested: " + str(length))
                 # fifo_count = (tmp[0] << 8) | tmp[1];
-                while fifo_count < length: # to account for the extra bytes
+                while fifo_count < length + 8: # to account for the extra bytes
                     # loop here rather than in the read
                     fifo_count = self.i2c.read_word(self.RA_FIFO_COUNTH)
                     if DEBUG: print("." * fifo_count),
@@ -1788,7 +1788,7 @@ class MPU6050(object):
                 more = float(fifo_count / length) - 1 > 0
 
                 if DEBUG: print(":".join(["%0.2x" % x for x in data]) + " -- count: " + str(fifo_count) + " -- read: " + str(length) + " -- more: " + str(more))
-                return data, more
+                return extra + data, more
 
             def read(self):
                 # /**
@@ -1847,7 +1847,7 @@ class MPU6050(object):
                     quat[2] = (fifo_data[8] << 24) | (fifo_data[9] << 16) | (fifo_data[10] << 8) | fifo_data[11]
                     quat[3] = (fifo_data[12] << 24) | (fifo_data[13] << 16) | (fifo_data[14] << 8) | fifo_data[15]
                     ii += 16
-                    #ii += 8 # to account for extra bytes read
+                    ii += 8 # to account for extra bytes read
                     # ifdef FIFO_CORRUPTION_CHECK
                     # /* We can detect a corrupted FIFO by monitoring the quaternion data and
                     #  * ensuring that the magnitude is always normalized to one. This
@@ -2661,6 +2661,8 @@ class MPU6050(object):
             :return: gyro, accel, quat, timestamp, sensors, more
             '''
 
+            INV_TWO_POWER_NEG_30 = 9.313225746154785e-10
+
             gyro, accel, quat, timestamp, sensors, more = self._fifo.read()
             if not raw:
                 gyro_scale_modifier = self.mpu.gyro.scale_modifier
@@ -2672,7 +2674,7 @@ class MPU6050(object):
                 accel = [x / accel_scale_modifier * self.mpu.GRAVITIY_MS2 for x in accel]
 
                 quat = [x - 4294967296 if x >= 0x80000000 else x for x in quat]
-                quat = [x / 16384.0 for x in quat]
+                quat = [x * INV_TWO_POWER_NEG_30 for x in quat]
 
             return gyro, accel, quat, timestamp, sensors, more
 
@@ -3305,12 +3307,12 @@ class MPU6050(object):
         ]
 
         def clamp(val, limit):
-            if -limit <= val <= limit:
-                return val
-            elif val <= -1 * limit:
-                return -1 * limit
-            elif limit >= val:
+            if val <= -1.0 * limit:
+                return -1.0 * limit
+            elif val >= limit:
                 return limit
+            else:
+                return val
 
         def get_estimated_offsets():
 
@@ -3355,7 +3357,7 @@ class MPU6050(object):
             if DEBUG: print("Zero Offset: " + str(rolling_avg_zero))
 
             # return [int(float(a) - (float(b) * float(c))) for a, b, c in zip(offsets, slope, rolling_avg_plus)]
-            return [clamp(-1 * (float(a) * float(b)), l) for a, b, l in zip(slope, rolling_avg_zero, limits)], slope
+            return [clamp(-1.0 * (float(a) * float(b)), l) for a, b, l in zip(slope, rolling_avg_zero, limits)], slope
 
         if DEBUG: print("Calibrating with Accelerometer raw precision < " + str(spec_a) + " and Gyro raw precision < " + str(spec_g))
         specs = [spec_a] * 3 + [spec_g] * 3  # array of the specs
@@ -3490,6 +3492,7 @@ class MPU6050(object):
         print("data " + json.dumps(data, indent=4, sort_keys=True))
 
     def run_DMP(self):
+
         while True:
             gyro, accel, quaternion, timestamp, sensors, more = self.DMP.get_data(raw=False)
             print(json.dumps(
@@ -3502,13 +3505,20 @@ class MPU6050(object):
                            "y": accel[1],
                            "z": accel[2]},
                  "accel": self.accelerometer.values,
-                 "quat": {"w":quaternion[0],
-                          "x":quaternion[1],
-                          "y": quaternion[2],
-                          "z": quaternion[3]
+                 "quat": {"w": quaternion[1],
+                          "x": quaternion[2],
+                          "y": quaternion[3],
+                          "z": quaternion[0]
                           }
                  }, indent=4, sort_keys=True))
-            time.sleep(0.01) # need to run faster than the FIFO
+
+            x, y, z, w = quaternion
+            q = Quaternion(w,x,y,z)
+            v = Vector(0,0,1)
+            u = v.get_rotated(q)
+            print("rotated world vector: " + str(u))
+
+            time.sleep(0.005) # need to run faster than the FIFO
 
     def run_loop(self):
         while True:
