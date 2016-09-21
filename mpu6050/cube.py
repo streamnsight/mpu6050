@@ -61,14 +61,14 @@ class Simulation:
         self.clock = pygame.time.Clock()
 
         self.vertices = [
-            Vector(-1, 1, -1),
-            Vector(1, 1, -1),
-            Vector(1, -1, -1),
-            Vector(-1, -1, -1),
-            Vector(-1, 1, 1),
-            Vector(1, 1, 1),
-            Vector(1, -1, 1),
-            Vector(-1, -1, 1)
+            Vector(-1, 1, -0.1),
+            Vector(1, 1, -0.1),
+            Vector(1, -1, -0.1),
+            Vector(-1, -1, -0.1),
+            Vector(-1, 1, 0.1),
+            Vector(1, 1, 0.1),
+            Vector(1, -1, 0.1),
+            Vector(-1, -1, 0.1)
         ]
 
         # Define the vertices that compose each of the 6 faces. These numbers are

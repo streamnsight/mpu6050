@@ -14,7 +14,7 @@ import filters
 
 
 class Point3D:
-    def __init__(self, x=0, y=0, z=0):
+    def __init__(self, x=0.0, y=0.0, z=0.0):
         self.x, self.y, self.z = float(x), float(y), float(z)
 
     def rotateX(self, angle):
@@ -73,14 +73,14 @@ class Simulation:
         # ]
 
         self.vertices = [
-            Point3D(-1, 1, -1),
-            Point3D(1, 1, -1),
-            Point3D(1, -1, -1),
-            Point3D(-1, -1, -1),
-            Point3D(-1, 1, 1),
-            Point3D(1, 1, 1),
-            Point3D(1, -1, 1),
-            Point3D(-1, -1, 1)
+            Point3D(-1, 1, -0.1),
+            Point3D(1, 1, -0.1),
+            Point3D(1, -1, -0.1),
+            Point3D(-1, -1, -0.1),
+            Point3D(-1, 1, 0.1),
+            Point3D(1, 1, 0.1),
+            Point3D(1, -1, 0.1),
+            Point3D(-1, -1, 0.1)
         ]
 
         # Define the vertices that compose each of the 6 faces. These numbers are
