@@ -97,7 +97,7 @@ class Simulation:
             gyro, accel, quaternion, timestamp, sensors, more = mpu.DMP.get_data(raw=False)
             x, y, z, w = quaternion
             q = Quaternion(w, x, y, z)
-
+            q.normalize()
 
             for v in self.vertices:
 
