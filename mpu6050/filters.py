@@ -13,9 +13,9 @@ class Complementary:
         self._pitch += gyro_data[0] * dt
         self._roll += gyro_data[1] * dt
 
-        # compensate drift with accelerometer data is it is no junk
-        mag = abs(accel_data[0]) + abs(accel_data[1]) + abs(accel_data[2])
-        # approximate_force_mag = math.sqrt(accel_data[0] * accel_data[0] + accel_data[1] * accel_data[1]  + accel_data[2] * accel_data[2])
+        # compensate drift with accelerometer data if it is no junk
+        # mag = abs(accel_data[0]) + abs(accel_data[1]) + abs(accel_data[2])
+        mag = math.sqrt(accel_data[0] * accel_data[0] + accel_data[1] * accel_data[1]  + accel_data[2] * accel_data[2])
         if 0.5 < mag < 2.0:
             # Turning around the X axis results in a vector on the Y-axis
             pitch_accel = math.atan2(accel_data[1], accel_data[2]) * 180 / math.pi
