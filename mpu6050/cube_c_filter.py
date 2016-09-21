@@ -99,12 +99,15 @@ class Simulation:
             # x, y, z, w = quaternion
             # q = Quaternion(w, x, y, z)
             # q.normalize()
-            pitch, roll = comp_filter.run(0.05, accel, gyro)
+            pitch = 0.0
+            roll = 0.0
+            if len(accel) == 3 and len(gyro) == 3:
+                pitch, roll = comp_filter.run(0.05, accel, gyro)
 
 
             for v in self.vertices:
 
-                u = v.get_rotated(q)
+                # u = v.get_rotated(q)
                 # # Rotate the point around X axis, then around Y axis, and finally around Z axis.
                 # r = v.rotateX(self.angle).rotateY(self.angle).rotateZ(self.angle)
                 r = v.rotateX(pitch).rotateY(roll)
