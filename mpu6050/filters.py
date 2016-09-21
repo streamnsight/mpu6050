@@ -1,6 +1,7 @@
 import math
 
-class Complimentary:
+
+class Complementary:
     def __init__(self, ratio=0.98):
         self.ratio = ratio
         self.inv_ratio = 1.0 - ratio
