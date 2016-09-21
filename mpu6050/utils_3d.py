@@ -65,6 +65,23 @@ class Quaternion:
         psi = math.atan2(2.0 * (self.w * self.z + self.x * self.y), 1.0 - 2.0 * (self.y * self.y + self.z * self.z))
         return phi, theta, psi
 
+    def from_accel(self, a):
+        if a.z >= 0:
+            q = Quaternion(
+                math.sqrt((a.z + 1)/2),
+                - a.y / math.sqrt(2.0 * (a.z + 1)),
+                a.x / math.sqrt(2.0 * (a.z + 1)),
+                0
+            )
+        else:
+            q = Quaternion(
+                - a.y / math.sqrt(2.0 * (1 - a.z)),
+                math.sqrt((1 - a.z) / 2),
+                0,
+                a.x / math.sqrt(2.0 * (1 - a.z))
+            )
+        return q
+
     @property
     def conjugate(self):
         """Conjugate of this Quaternion
