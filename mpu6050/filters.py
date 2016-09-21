@@ -25,4 +25,4 @@ class Complementary:
             self._pitch = self._pitch * self.ratio + pitch_accel * self.inv_ratio
             self._roll = self._roll * self.ratio + pitch_accel * self.inv_ratio
 
-            return self._pitch, self._roll
+        return self._pitch, self._roll
