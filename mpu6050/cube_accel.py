@@ -99,7 +99,7 @@ class Simulation:
             # q = Quaternion(w, x, y, z)
             a = Vector(accel[0], accel[1], accel[2])
             a.normalize()
-            q = Quaternion.from_accel(a)
+            q = Quaternion().from_accel(a)
             q.normalize()
 
             for v in self.vertices:
