@@ -59,6 +59,12 @@ class Quaternion:
         r.normalize()
         return r
 
+    def get_euler_angles(self):
+        phi = math.atan2(2.0 * (self.w * self.x + self.y * self.z), 1.0 - 2.0 * (self.x * self.x + self.y * self.y))
+        theta = math.asin(2.0 * (self.w * self.y - self.z * self.x))
+        psi = math.atan2(2.0 * (self.w * self.z + self.x * self.y), 1.0 - 2.0 * (self.y * self.y + self.z * self.z))
+        return phi, theta, psi
+
     @property
     def conjugate(self):
         """Conjugate of this Quaternion
