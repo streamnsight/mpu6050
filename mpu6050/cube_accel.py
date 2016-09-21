@@ -107,7 +107,7 @@ class Simulation:
                 u = v.get_rotated(q)
                 # # Rotate the point around X axis, then around Y axis, and finally around Z axis.
                 # r = v.rotateX(self.angle).rotateY(self.angle).rotateZ(self.angle)
-                r = Point3D(u.x, u.y, u.z)
+                r = Point3D(u.y, u.z, u.x) # swapping x and z to
                 # Transform the point from 3D to 2D
                 p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
                 # Put the point in the list of transformed vertices

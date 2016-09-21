@@ -66,6 +66,8 @@ class Quaternion:
         return phi, theta, psi
 
     def from_accel(self, a):
+        """Get Quaternion from accelerometer"""
+        # from Sensors 2015, 15, 19302-19330; doi:10.3390/s150819302 p19311 (25)
         if a.z >= 0:
             q = Quaternion(
                 math.sqrt((a.z + 1)/2),
